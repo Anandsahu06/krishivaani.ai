@@ -98,7 +98,7 @@ export default function RecommendResultsPage() {
       </div>
 
       {recommendations && recommendations[0]?.cropName?.includes('Fallback') && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-850 p-4 rounded-2xl text-xs font-semibold leading-relaxed">
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-2xl text-xs font-semibold leading-relaxed">
           ⚠️ **Note for Hackathon Judges**: The Google Gemini API Free-Tier rate limit (15 requests/min) was reached. 
           The application has loaded a cached fallback crop suitability recommendation list so the visual flow remains fully functional and testable!
         </div>
