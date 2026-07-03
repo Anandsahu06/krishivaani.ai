@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+google-genai
+supabase
+python-multipart
+requests
+streamlit
+plotly
+psycopg2-binary
+
