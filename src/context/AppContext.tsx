@@ -119,9 +119,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (savedLang === 'hi' || savedLang === 'en') {
       setLanguageState(savedLang);
     }
+    
     if (savedUser) {
       try {
-        setUserState(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        setUserState(parsed);
+        
+        // Silent validation check against database to heal stale local sessions
+        fetch(`/api/farmer/active-farm?userId=${parsed.id}`)
+          .then(res => {
+            if (res.status === 404) {
+              console.warn("Stale profile session detected. Clearing storage...");
+              localStorage.removeItem('krishi_user');
+              setUserState(null);
+            }
+          })
+          .catch(err => console.error("Profile sync check failed:", err));
       } catch (e) {
         console.error("Error parsing saved user session", e);
       }

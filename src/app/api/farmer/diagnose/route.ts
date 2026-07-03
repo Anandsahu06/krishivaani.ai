@@ -28,14 +28,8 @@ export async function POST(req: Request) {
       language: language || 'hi'
     });
 
-    // For display, let's save a placeholder public image or the base64 string
-    // Storing the base64 data URI directly makes it self-contained and visual out-of-the-box!
-    const imageUrl = `data:${mimeType};base64,${rawBase64.slice(0, 100000)}`; // store truncated version or public placeholder if too large.
-    // Wait! Let's store a public placeholder image + the actual diagnosis description so the admin can see a beautiful leaf picture,
-    // e.g. a nice mock leaf disease picture if it fits, but let's store the full image_url using a public helper or the base64 string.
-    // To ensure the database doesn't crash on huge text, we can use a standard public Unsplash fallback or truncate it.
-    // A standard cotton leaf blight image is nice: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800'
-    const displayImageUrl = 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800&auto=format&fit=crop';
+    // Construct the complete image data URI for inline display and save in database
+    const imageUrl = `data:${mimeType};base64,${rawBase64}`;
 
     // 2. Insert the case details into diagnosis_cases
     const [savedCase] = await sql`
@@ -55,7 +49,7 @@ export async function POST(req: Request) {
       VALUES (
         ${profileId}, 
         ${cropType}, 
-        ${displayImageUrl}, 
+        ${imageUrl}, 
         '', 
         ${userNotes || ''}, 
         ${diagnosis.disease}, 
