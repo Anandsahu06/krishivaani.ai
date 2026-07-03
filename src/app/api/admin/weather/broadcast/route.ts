@@ -10,9 +10,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "District name and warning message are required" }, { status: 400 });
     }
 
-    // 1. Find all farmers registered in this district
+    // 1. Find all farmers registered in this district (including phone numbers)
     const farmers = await sql`
-      SELECT id, village_name, preferred_language FROM profiles
+      SELECT id, phone_number, farmer_name, village_name, preferred_language FROM profiles
       WHERE role = 'farmer' AND lower(district) = ${district.toLowerCase().trim()}
     `;
 
@@ -83,6 +83,16 @@ export async function POST(req: Request) {
           'weather_alert'
         )
       `;
+
+      // Send SMS & WhatsApp Broadcast Alert to each farmer's registered number
+      try {
+        const { sendSMS, sendWhatsApp } = require('@/utils/sms');
+        const alertMsg = `कृषिवाणी (KrishiVaani) AI मौसम चेतावनी: ${message}`;
+        await sendSMS(farmer.phone_number, alertMsg);
+        await sendWhatsApp(farmer.phone_number, alertMsg);
+      } catch (smsErr) {
+        console.error(`SMS broadcast failed to ${farmer.phone_number}:`, smsErr);
+      }
     }
 
     return NextResponse.json({

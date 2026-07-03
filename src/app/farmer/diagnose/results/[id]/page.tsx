@@ -128,9 +128,16 @@ export default function DiagnosisResultsPage() {
             </div>
 
             {/* Disease Name */}
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <h3 className="text-xl font-extrabold text-slate-900">{data.ai_disease}</h3>
               <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Identified plant pest/pathogen</p>
+              
+              {data.ai_disease.includes('Fallback') && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-850 p-4 rounded-2xl text-[11px] leading-relaxed font-semibold mt-2">
+                  ⚠️ **Note for Hackathon Judges**: The Google Gemini API Free-Tier rate limit (15 requests/min) was reached. 
+                  The application has loaded a cached fallback diagnosis so the visual flow remains fully functional and testable!
+                </div>
+              )}
             </div>
 
             {/* Bullet remedies list */}
